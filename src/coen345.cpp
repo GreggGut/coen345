@@ -9,7 +9,12 @@
 #include <iostream>
 using namespace std;
 
-int main() {
-	cout << "!!!Hello World!!!" << endl; // prints !!!Hello World!!!
+int main()
+{
+	string t;
+	cout << endl << "Enter command: ";
+	getline(cin, t, '\n');
+
+
 	return 0;
 }
