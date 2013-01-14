@@ -1,9 +1,7 @@
-
 #include <iostream>
 #include <stdlib.h>
 
 using namespace std;
-
 
 int** initGrid(int gridSize);
 void deleteGrid(int** grid, int gridSize);
@@ -21,11 +19,13 @@ int main(int argc, const char * argv[])
 
 	int locX = 0, locY = 0;
 	bool penDown = false;
-	enum {face_north, face_west, face_south, face_east} facing = face_north;
+	enum
+	{
+		face_north, face_west, face_south, face_east
+	} facing = face_north;
 
 	//Init
 	grid = initGrid(gridSize);
-
 
 	while (programRunning)
 	{
@@ -35,35 +35,33 @@ int main(int argc, const char * argv[])
 		cin >> in;
 		switch (in)
 		{
-			//Pen up
-			case 'U':
-			case 'u':
-				penDown = false;
-				break;
+		//Pen up
+		case 'U':
+		case 'u':
+			penDown = false;
+			break;
 			//Pen down
-			case 'D':
-			case 'd':
-				penDown = true;
-				break;
+		case 'D':
+		case 'd':
+			penDown = true;
+			break;
 
 			//Turn right
-			case 'R':
-			case 'r':
-				facing = (facing == face_north ? face_east :
-						  facing == face_west ? face_north :
-						  facing == face_south ? face_west :
-						  facing == face_east ? face_south :
-						  facing);
-				break;
+		case 'R':
+		case 'r':
+			facing = (facing == face_north ? face_east :
+						facing == face_west ? face_north :
+						facing == face_south ? face_west :
+						facing == face_east ? face_south : facing);
+			break;
 			//Turn left
-			case 'L':
-			case 'l':
-				facing = (facing == face_north ? face_west :
-						  facing == face_west ? face_south :
-						  facing == face_south ? face_east :
-						  facing == face_east ? face_north :
-						  facing);
-				break;
+		case 'L':
+		case 'l':
+			facing = (facing == face_north ? face_west :
+						facing == face_west ? face_south :
+						facing == face_south ? face_east :
+						facing == face_east ? face_north : facing);
+			break;
 
 			//Move (NYI)
 //			case 'M':
@@ -71,50 +69,45 @@ int main(int argc, const char * argv[])
 //				break;
 
 			//Print grid
-			case 'P':
-			case 'p':
-				displayGrid(grid, gridSize);
-				break;
+		case 'P':
+		case 'p':
+			displayGrid(grid, gridSize);
+			break;
 
 			//Current status
-			case 'C':
-			case 'c':
-				cout << "Pos: (" << locX << ", " << locY << ")" << endl;
-				cout << "Facing: " <<
-				(facing == face_north ? "north" :
-				 facing == face_west ? "west" :
-				 facing == face_south ? "south" :
-				 facing == face_east ? "east" :
-				 "Unknown direction") << endl;
-				cout << "Pen: " << (penDown ? "down" : "up") << endl;
-				break;
+		case 'C':
+		case 'c':
+			cout << "Pos: (" << locX << ", " << locY << ")" << endl;
+			cout << "Facing: "
+					<< (facing == face_north ? "north" :
+						facing == face_west ? "west" :
+						facing == face_south ? "south" :
+						facing == face_east ? "east" : "Unknown direction")
+					<< endl;
+			cout << "Pen: " << (penDown ? "down" : "up") << endl;
+			break;
 
 			//Quit
-			case 'Q':
-			case 'q':
-				programRunning = false;
-				break;
+		case 'Q':
+		case 'q':
+			programRunning = false;
+			break;
 
 			//Initialize grid (NYI)
 //			case 'I':
 //			case 'i':
 //				break;
 
-
-			default:
-				break;
+		default:
+			break;
 		}
-
 
 		//react to input
 		;
 	}
 
-
 	return 0;
 }
-
-
 
 int** initGrid(int gridSize)
 {
@@ -134,17 +127,15 @@ int** initGrid(int gridSize)
 	return grid;
 }
 
-
 void deleteGrid(int** grid, int gridSize)
 {
 	for (int i = 0; i < gridSize; i++)
 	{
-		delete [] grid[i];
+		delete[] grid[i];
 	}
-	delete [] grid;
+	delete[] grid;
 
 }
-
 
 void displayGrid(int** grid, int gridSize)
 {
@@ -162,7 +153,8 @@ void displayGrid(int** grid, int gridSize)
 		cout << y << "\t";
 		for (int x = 0; x < gridSize; x++)
 		{
-			if (grid[x][y]) cout << '*';
+			if (grid[x][y])
+				cout << '*';
 			cout << "\t";
 		}
 		cout << y << endl;
@@ -176,11 +168,7 @@ void displayGrid(int** grid, int gridSize)
 	cout << endl;
 	cout << endl;
 
-
 }
-
-
-
 
 /*
  [U|u]			Pen up
