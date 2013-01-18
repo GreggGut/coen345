@@ -11,6 +11,7 @@ int main(int argc, const char * argv[])
 {
 	bool programRunning = true;
 
+	//hello
 	char in;
 
 	int** grid;
