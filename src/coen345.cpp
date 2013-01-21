@@ -1,174 +1,124 @@
 #include <iostream>
 #include <stdlib.h>
+#include <vector>
+#include "Grid.h"
 
 using namespace std;
 
-int** initGrid(int gridSize);
-void deleteGrid(int** grid, int gridSize);
-void displayGrid(int** grid, int gridSize);
+void action(string s, Grid* grid);
 
 int main(int argc, const char * argv[])
 {
-	bool programRunning = true;
+//	bool programRunning = true;
 
-	//hello
 	char in;
+	vector<string> history;
+	Grid* grid = NULL;
 
-	int** grid;
-
-	int gridSize = 10;
-
-	int locX = 0, locY = 0;
-	bool penDown = false;
-	enum
+	do
 	{
-		face_north, face_west, face_south, face_east
-	} facing = face_north;
+		string input;
+		getline(std::cin, input);
+		in = input[0];
 
-	//Init
-	grid = initGrid(gridSize);
-
-	while (programRunning)
-	{
-		//get input
-		//in = 'q';
-		//get(&in);
-		cin >> in;
 		switch (in)
 		{
-		//Pen up
-		case 'U':
-		case 'u':
-			penDown = false;
-			break;
-			//Pen down
-		case 'D':
-		case 'd':
-			penDown = true;
+		case 'h':
+		case 'H':
+			for (uint i = 0; i < history.size(); i++)
+			{
+				action(history.at(i), grid);
+			}
 			break;
 
-			//Turn right
-		case 'R':
-		case 'r':
-			facing = (facing == face_north ? face_east :
-						facing == face_west ? face_north :
-						facing == face_south ? face_west :
-						facing == face_east ? face_south : facing);
-			break;
-			//Turn left
-		case 'L':
-		case 'l':
-			facing = (facing == face_north ? face_west :
-						facing == face_west ? face_south :
-						facing == face_south ? face_east :
-						facing == face_east ? face_north : facing);
-			break;
+		case 'i':
+		case 'I':
+		{
+			delete grid;
+			input.erase(0, 1);
+			int gridSize = atoi(input.c_str());
+			grid = new Grid(gridSize);
 
-			//Move (NYI)
-//			case 'M':
-//			case 'm':
-//				break;
-
-			//Print grid
-		case 'P':
-		case 'p':
-			displayGrid(grid, gridSize);
-			break;
-
-			//Current status
-		case 'C':
-		case 'c':
-			cout << "Pos: (" << locX << ", " << locY << ")" << endl;
-			cout << "Facing: "
-					<< (facing == face_north ? "north" :
-						facing == face_west ? "west" :
-						facing == face_south ? "south" :
-						facing == face_east ? "east" : "Unknown direction")
-					<< endl;
-			cout << "Pen: " << (penDown ? "down" : "up") << endl;
-			break;
-
-			//Quit
-		case 'Q':
-		case 'q':
-			programRunning = false;
-			break;
-
-			//Initialize grid (NYI)
-//			case 'I':
-//			case 'i':
-//				break;
-
-		default:
 			break;
 		}
+		default:
+			history.push_back(input);
 
-		//react to input
-		;
-	}
+			action(input, grid);
+			break;
+
+		}
+
+	} while (in != 'q');
+
+//	while (programRunning)
+//	{
+//
+//	}
 
 	return 0;
 }
 
-int** initGrid(int gridSize)
+void action(string input, Grid* grid)
 {
-	int** grid;
-
-	grid = new int*[gridSize];
-	for (int i = 0; i < gridSize; i++)
+	char in = input[0];
+	switch (in)
 	{
-		grid[i] = new int[gridSize];
-		//Initialize all values to 0
-		for (int j = 0; j < gridSize; j++)
+	//Pen up
+	case 'U':
+	case 'u':
+		grid->raisePen();
+		break;
+		//Pen down
+	case 'D':
+	case 'd':
+		grid->lowerPen();
+		break;
+
+		//Turn right
+	case 'R':
+	case 'r':
+		grid->turnRight();
+		break;
+		//Turn left
+	case 'L':
+	case 'l':
+		grid->turnLeft();
+		break;
+
+		//Move x positions
+	case 'M':
+	case 'm':
+	{
+		input.erase(0, 1);
+		int spacesToMove = atoi(input.c_str());
+
+		int moved = grid->moveRobot(spacesToMove);
+		if(moved !=spacesToMove)
 		{
-			grid[i][j] = 0;
+
+			cout<<"Error... moved "<<moved<<" tobemoved: "<<spacesToMove<<endl;
 		}
+
+		break;
 	}
+		//Print grid
+	case 'P':
+	case 'p':
+		grid->print();
 
-	return grid;
-}
+		break;
 
-void deleteGrid(int** grid, int gridSize)
-{
-	for (int i = 0; i < gridSize; i++)
-	{
-		delete[] grid[i];
+		//Current status
+	case 'C':
+	case 'c':
+		grid->printRobot();
+
+		break;
+
+	default:
+		break;
 	}
-	delete[] grid;
-
-}
-
-void displayGrid(int** grid, int gridSize)
-{
-	cout << endl;
-
-	cout << "\t";
-	for (int x = 0; x < gridSize; x++)
-	{
-		cout << x << "\t";
-	}
-	cout << endl;
-
-	for (int y = gridSize - 1; y >= 0; y--)
-	{
-		cout << y << "\t";
-		for (int x = 0; x < gridSize; x++)
-		{
-			if (grid[x][y])
-				cout << '*';
-			cout << "\t";
-		}
-		cout << y << endl;
-	}
-
-	cout << "\t";
-	for (int x = 0; x < gridSize; x++)
-	{
-		cout << x << "\t";
-	}
-	cout << endl;
-	cout << endl;
-
 }
 
 /*
