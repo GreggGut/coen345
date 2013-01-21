@@ -129,8 +129,8 @@ int Grid::moveRobot(int distance)
 	//move 1 space at a time
 	//check bounds before moving
 	while (distMoved < distance
-			&& (robot.x >= 1 && robot.x < size-1)
-			&& (robot.y >= 1 && robot.y < size-1)
+			&& ((robot.x + xDirn) >= 0 && (robot.x + xDirn) < size)
+			&& ((robot.y + yDirn) >= 0 && (robot.y + yDirn) < size)
 	)
 	{
 		//move into next space
