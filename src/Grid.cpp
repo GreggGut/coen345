@@ -19,7 +19,9 @@ using namespace std;
 // [I n|i n] Initialize the system: The values of the array floor are zeros and the robot is back to [0, 0], pen up and facing north. n size of the array, an integer greater than zero
 Grid::Grid(int gridSize)
 {
-  size = gridSize;
+	if (gridSize < 1) gridSize = 1;
+
+	size = gridSize;
 
 	//robot init
 	robot.facing = robot.FACING_NORTH;
