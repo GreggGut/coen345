@@ -124,7 +124,7 @@ int Grid::moveRobot(int distance)
 														0);
 
 	//mark starting space (even if not moving)
-	this->markSpace(robot.x, robot.y);
+	if (robot.penDown) this->markSpace(robot.x, robot.y);
 
 	//move 1 space at a time
 	//check bounds before moving
@@ -138,7 +138,7 @@ int Grid::moveRobot(int distance)
 		robot.y += yDirn;
 		distMoved++;
 		//mark new space
-		this->markSpace(robot.x, robot.y);
+		if (robot.penDown) this->markSpace(robot.x, robot.y);
 	}
 
 	return distMoved;
