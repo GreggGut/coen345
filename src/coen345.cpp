@@ -29,7 +29,12 @@ int main(int argc, const char * argv[])
 
 		if (input[0] == 'i' || input[0] == 'I')
 		{
-
+			history.push_back(input);
+			int gridSize;
+			if ((gridSize = getGridSize(input)) > 0)
+			{
+				grid = initialize(grid, gridSize);
+			}
 		}
 		else if (input[0] == 'q' || input[0] == 'Q')
 		{
