@@ -10,16 +10,15 @@
 //C Library
 #include <iostream>
 
-
 //namespace
 using namespace std;
-
 
 //Constructor
 // [I n|i n] Initialize the system: The values of the array floor are zeros and the robot is back to [0, 0], pen up and facing north. n size of the array, an integer greater than zero
 Grid::Grid(int gridSize)
 {
-	if (gridSize < 1) gridSize = 1;
+	if (gridSize < 1)
+		gridSize = 1;
 
 	size = gridSize;
 
@@ -28,7 +27,6 @@ Grid::Grid(int gridSize)
 	robot.penDown = false;
 	robot.x = 0;
 	robot.y = 0;
-
 
 	contents = new int*[gridSize];
 	for (int i = 0; i < gridSize; i++)
@@ -43,16 +41,15 @@ Grid::Grid(int gridSize)
 
 }
 
-
 //Destructor
 Grid::~Grid()
 {
-	for (int i = 0; i < size; i++) {
+	for (int i = 0; i < size; i++)
+	{
 		delete[] contents[i];
 	}
 	delete[] contents;
 }
-
 
 /*----------------------------------------------------*/
 /*- Private                                          -*/
@@ -65,7 +62,6 @@ void Grid::markSpace(int x, int y)
 		contents[x][y] = 1;
 }
 
-
 /*----------------------------------------------------*/
 /*- Public                                           -*/
 /*----------------------------------------------------*/
@@ -77,7 +73,6 @@ void Grid::raisePen()
 	robot.penDown = false;
 }
 
-
 //Lower pen
 // [D|d] Pen down
 void Grid::lowerPen()
@@ -85,30 +80,29 @@ void Grid::lowerPen()
 	robot.penDown = true;
 }
 
-
 //Turn robot right
 // [R|r] Turn right
 void Grid::turnRight()
 {
-	robot.facing = (robot.facing == robot.FACING_NORTH ? robot.FACING_EAST :
+	robot.facing = (
+			robot.facing == robot.FACING_NORTH ? robot.FACING_EAST :
 			robot.facing == robot.FACING_WEST ? robot.FACING_NORTH :
 			robot.facing == robot.FACING_SOUTH ? robot.FACING_WEST :
-			robot.facing == robot.FACING_EAST ? robot.FACING_SOUTH :
-												robot.facing);
+			robot.facing == robot.FACING_EAST ?
+					robot.FACING_SOUTH : robot.facing);
 }
-
 
 //Turn robot left
 // [L|l] Turn left
 void Grid::turnLeft()
 {
-	robot.facing = (robot.facing == robot.FACING_NORTH ? robot.FACING_WEST :
+	robot.facing = (
+			robot.facing == robot.FACING_NORTH ? robot.FACING_WEST :
 			robot.facing == robot.FACING_WEST ? robot.FACING_SOUTH :
 			robot.facing == robot.FACING_SOUTH ? robot.FACING_EAST :
-			robot.facing == robot.FACING_EAST ? robot.FACING_NORTH :
-												robot.facing);
+			robot.facing == robot.FACING_EAST ?
+					robot.FACING_NORTH : robot.facing);
 }
-
 
 //Move robot
 // [M s|m s] Move forward s spaces (s is a non-negative integer)
@@ -117,33 +111,31 @@ int Grid::moveRobot(int distance)
 	int distMoved = 0;
 
 	int xDirn = (robot.facing == robot.FACING_WEST ? -1 :
-					robot.facing == robot.FACING_EAST ? 1 :
-														0);
+					robot.facing == robot.FACING_EAST ? 1 : 0);
 	int yDirn = (robot.facing == robot.FACING_SOUTH ? -1 :
-					robot.facing == robot.FACING_NORTH ? 1 :
-														0);
+					robot.facing == robot.FACING_NORTH ? 1 : 0);
 
 	//mark starting space (even if not moving)
-	if (robot.penDown) this->markSpace(robot.x, robot.y);
+	if (robot.penDown)
+		this->markSpace(robot.x, robot.y);
 
 	//move 1 space at a time
 	//check bounds before moving
 	while (distMoved < distance
 			&& ((robot.x + xDirn) >= 0 && (robot.x + xDirn) < size)
-			&& ((robot.y + yDirn) >= 0 && (robot.y + yDirn) < size)
-	)
+			&& ((robot.y + yDirn) >= 0 && (robot.y + yDirn) < size))
 	{
 		//move into next space
 		robot.x += xDirn;
 		robot.y += yDirn;
 		distMoved++;
 		//mark new space
-		if (robot.penDown) this->markSpace(robot.x, robot.y);
+		if (robot.penDown)
+			this->markSpace(robot.x, robot.y);
 	}
 
 	return distMoved;
 }
-
 
 //Print grid
 // [P|p] Print the N by N array and display the indices
@@ -152,14 +144,17 @@ void Grid::print()
 	cout << endl;
 
 	cout << "\t";
-	for (int x = 0; x < size; x++) {
+	for (int x = 0; x < size; x++)
+	{
 		cout << x << "\t";
 	}
 	cout << endl;
 
-	for (int y = size - 1; y >= 0; y--) {
+	for (int y = size - 1; y >= 0; y--)
+	{
 		cout << y << "\t";
-		for (int x = 0; x < size; x++) {
+		for (int x = 0; x < size; x++)
+		{
 			if (contents[x][y] == 1)
 				cout << '*';
 			cout << "\t";
@@ -168,7 +163,8 @@ void Grid::print()
 	}
 
 	cout << "\t";
-	for (int x = 0; x < size; x++) {
+	for (int x = 0; x < size; x++)
+	{
 		cout << x << "\t";
 	}
 	cout << endl;
@@ -177,21 +173,18 @@ void Grid::print()
 
 }
 
-
 //Print robot position
 // [C|c] Print current position of the pen and whether it is up or down and its facing direction
 void Grid::printRobot()
 {
 	cout << "Pos: (" << robot.x << ", " << robot.y << ")" << endl;
-	cout  << "Facing: "
+	cout << "Facing: "
 			<< (robot.facing == robot.FACING_NORTH ? "north" :
 				robot.facing == robot.FACING_WEST ? "west" :
 				robot.facing == robot.FACING_SOUTH ? "south" :
-				robot.facing == robot.FACING_EAST ? "east" :
-													"Unknown direction")
+				robot.facing == robot.FACING_EAST ? "east" : "Unknown direction")
 			<< endl;
 	cout << "Pen: " << (robot.penDown ? "down" : "up") << endl;
 
 }
-
 

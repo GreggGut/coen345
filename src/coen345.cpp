@@ -1,3 +1,6 @@
+/**  Created on: Jan 20, 2013
+ *      Author: Grzegorz Gut
+ */
 #include <iostream>
 #include <stdlib.h>
 #include <vector>
@@ -6,19 +9,45 @@
 using namespace std;
 
 void action(string s, Grid* grid);
-Grid* initialize(Grid* grid, string s);
+Grid* initialize(Grid* grid, int gridSize);
+int getGridSize(string input);
 
 int main(int argc, const char * argv[])
 {
-//	bool programRunning = true;
-
 	char in;
 	vector<string> history;
 	Grid* grid = NULL;
 
-	do
+	//Making sure the grid is initialize before being able to use it
+	//The only options available are initialization of the grid (I n|i n), where n is a positive integer and quit with (Q|q)
+	while (grid == NULL)
 	{
 		string input;
+		cout << "Enter command: ";
+		getline(std::cin, input);
+		in = input[0];
+
+		if (input[0] == 'i' || input[0] == 'I')
+		{
+
+		}
+		else if (input[0] == 'q' || input[0] == 'Q')
+		{
+			break;
+		}
+		else
+		{
+			cout
+					<< "You need to initialize the system first. Use command 'I' followed by the floor size."
+					<< endl;
+		}
+	}
+
+	//Loop until user wants to quit
+	while (in != 'q')
+	{
+		string input;
+		cout << "Enter command: ";
 		getline(std::cin, input);
 		in = input[0];
 
@@ -28,10 +57,15 @@ int main(int argc, const char * argv[])
 		case 'H':
 			for (uint i = 0; i < history.size(); i++)
 			{
-				cout<<history.at(i)<<endl;
+				cout << history.at(i) << endl;
 				if (history.at(i)[0] == 'i' || history.at(i)[0] == 'I')
 				{
-					grid=initialize(grid,history.at(i) );
+					string input = history.at(i);
+					int gridSize;
+					if ((gridSize = getGridSize(input)) > 0)
+					{
+						grid = initialize(grid, gridSize);
+					}
 				}
 				else
 				{
@@ -44,7 +78,12 @@ int main(int argc, const char * argv[])
 		case 'I':
 		{
 			history.push_back(input);
-			grid = initialize(grid, input);
+
+			int gridSize;
+			if ((gridSize = getGridSize(input)) > 0)
+			{
+				grid = initialize(grid, gridSize);
+			}
 
 			break;
 		}
@@ -53,15 +92,8 @@ int main(int argc, const char * argv[])
 
 			action(input, grid);
 			break;
-
 		}
-
-	} while (in != 'q');
-
-//	while (programRunning)
-//	{
-//
-//	}
+	}
 
 	return 0;
 }
@@ -99,13 +131,21 @@ void action(string input, Grid* grid)
 	{
 		input.erase(0, 1);
 		int spacesToMove = atoi(input.c_str());
-
-		int moved = grid->moveRobot(spacesToMove);
-		if (moved != spacesToMove)
+		if (spacesToMove > -1)
 		{
 
-			cout << "Error... moved " << moved << " tobemoved: " << spacesToMove
-					<< endl;
+			int moved = grid->moveRobot(spacesToMove);
+			if (moved != spacesToMove)
+			{
+
+				cout << "Error... Requested a move of " << spacesToMove
+						<< " spaces however the robot was only able to move "
+						<< moved << " space(s)" << endl;
+			}
+		}
+		else
+		{
+			cout << "The move can only accept non-negative integer" << endl;
 		}
 
 		break;
@@ -124,30 +164,28 @@ void action(string input, Grid* grid)
 
 		break;
 
+		//Not a valid command
 	default:
+		cout << input << " is not a valid command" << endl;
 		break;
 	}
 }
 
-Grid* initialize(Grid* grid, string input)
+Grid* initialize(Grid* grid, int gridSize)
 {
 	delete grid;
-	input.erase(0, 1);
-	int gridSize = atoi(input.c_str());
+
 	grid = new Grid(gridSize);
 	return grid;
 }
 
-/*
- [U|u]			Pen up
- [D|d]			Pen down
- [R|r]			Turn right
- [L|l]			Turn left
- [M s|m s]		Move forward s spaces (s is a non-negative integer)
- [P|p]			Print the N by N array and display the indices
- [C|c]			Print current position of the pen and whether it is up or down and its facing direction
- [Q|q]			Stop the program
- [I n|i n]		Initialize the system: The values of the array floor are zeros and the robot is back
- to [0, 0], pen up and facing north. n size of the array, an integer greater than zero
- [H|h]			Replay all the commands entered by the user as a history (bonus question 5 marks)
- */
+int getGridSize(string input)
+{
+	input.erase(0, 1);
+	int gridSize = atoi(input.c_str());
+	if (gridSize < 1)
+	{
+		cout << "Grid size needs to be larger than 0" << endl;
+	}
+	return gridSize;
+}
