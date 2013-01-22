@@ -6,6 +6,7 @@
 using namespace std;
 
 void action(string s, Grid* grid);
+Grid* initialize(Grid* grid, string s);
 
 int main(int argc, const char * argv[])
 {
@@ -27,17 +28,23 @@ int main(int argc, const char * argv[])
 		case 'H':
 			for (uint i = 0; i < history.size(); i++)
 			{
-				action(history.at(i), grid);
+				cout<<history.at(i)<<endl;
+				if (history.at(i)[0] == 'i' || history.at(i)[0] == 'I')
+				{
+					grid=initialize(grid,history.at(i) );
+				}
+				else
+				{
+					action(history.at(i), grid);
+				}
 			}
 			break;
 
 		case 'i':
 		case 'I':
 		{
-			delete grid;
-			input.erase(0, 1);
-			int gridSize = atoi(input.c_str());
-			grid = new Grid(gridSize);
+			history.push_back(input);
+			grid = initialize(grid, input);
 
 			break;
 		}
@@ -94,10 +101,11 @@ void action(string input, Grid* grid)
 		int spacesToMove = atoi(input.c_str());
 
 		int moved = grid->moveRobot(spacesToMove);
-		if(moved !=spacesToMove)
+		if (moved != spacesToMove)
 		{
 
-			cout<<"Error... moved "<<moved<<" tobemoved: "<<spacesToMove<<endl;
+			cout << "Error... moved " << moved << " tobemoved: " << spacesToMove
+					<< endl;
 		}
 
 		break;
@@ -119,6 +127,15 @@ void action(string input, Grid* grid)
 	default:
 		break;
 	}
+}
+
+Grid* initialize(Grid* grid, string input)
+{
+	delete grid;
+	input.erase(0, 1);
+	int gridSize = atoi(input.c_str());
+	grid = new Grid(gridSize);
+	return grid;
 }
 
 /*
