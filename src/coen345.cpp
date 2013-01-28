@@ -11,8 +11,9 @@ using namespace std;
 void action(string s, Grid* grid);
 Grid* initialize(Grid* grid, int gridSize);
 int getGridSize(string input);
+int analyseInput(string input);
 
-int main(int argc, const char * argv[])
+int main()
 {
 	char in;
 	vector<string> history;
@@ -27,6 +28,7 @@ int main(int argc, const char * argv[])
 		getline(std::cin, input);
 		in = input[0];
 
+		//Initializing the grid
 		if (input[0] == 'i' || input[0] == 'I')
 		{
 			history.push_back(input);
@@ -36,15 +38,16 @@ int main(int argc, const char * argv[])
 				grid = initialize(grid, gridSize);
 			}
 		}
+		//Quitting
 		else if (input[0] == 'q' || input[0] == 'Q')
 		{
 			break;
 		}
 		else
 		{
-			cout
-					<< "You need to initialize the system first. Use command 'I' followed by the floor size."
-					<< endl;
+			history.push_back(input);
+			cout << "You need to initialize the board first." << endl
+					<< "Use command 'I' followed by the floor size." << endl;
 		}
 	}
 
@@ -58,8 +61,10 @@ int main(int argc, const char * argv[])
 
 		switch (in)
 		{
+		//History
 		case 'h':
 		case 'H':
+			//Replay every event in the history
 			for (uint i = 0; i < history.size(); i++)
 			{
 				cout << history.at(i) << endl;
@@ -78,7 +83,7 @@ int main(int argc, const char * argv[])
 				}
 			}
 			break;
-
+			//Initializing board
 		case 'i':
 		case 'I':
 		{
@@ -92,6 +97,7 @@ int main(int argc, const char * argv[])
 
 			break;
 		}
+			//Any other entry
 		default:
 			history.push_back(input);
 
@@ -134,11 +140,11 @@ void action(string input, Grid* grid)
 	case 'M':
 	case 'm':
 	{
-		input.erase(0, 1);
-		int spacesToMove = atoi(input.c_str());
+		//Analyze input and move robot if input is fine
+		int spacesToMove = analyseInput(input);
 		if (spacesToMove > -1)
 		{
-
+			//Try moving and display error message if the move cannot be completed (request move doesn't equal real move)
 			int moved = grid->moveRobot(spacesToMove);
 			if (moved != spacesToMove)
 			{
@@ -150,7 +156,11 @@ void action(string input, Grid* grid)
 		}
 		else
 		{
-			cout << "The move can only accept non-negative integer" << endl;
+			cout
+					<< "Error... The Move command needs to be in the following format:"
+					<< endl
+					<< "nM i|m i|Mi|mi, where i is a non negative integer."
+					<< endl;
 		}
 
 		break;
@@ -176,6 +186,7 @@ void action(string input, Grid* grid)
 	}
 }
 
+//Initialize the board to a new size
 Grid* initialize(Grid* grid, int gridSize)
 {
 	delete grid;
@@ -184,13 +195,52 @@ Grid* initialize(Grid* grid, int gridSize)
 	return grid;
 }
 
+//Get board size from user input
 int getGridSize(string input)
 {
-	input.erase(0, 1);
-	int gridSize = atoi(input.c_str());
-	if (gridSize < 1)
+	int size;
+	if ((size = analyseInput(input)) > 0)
 	{
-		cout << "Grid size needs to be larger than 0" << endl;
+		return size;
 	}
-	return gridSize;
+	else
+	{
+		cout
+				<< "Error... The Initialize command needs to be in the following format: \nI n|i n|In|in, where n is a positive integer."
+				<< endl;
+		return -1;
+	}
+}
+
+//Analyze the user input with the Initialize and Move commands
+int analyseInput(string input)
+{
+	//Remove all leading whitespace
+	input.erase(0, 1);
+	int lead = 0;
+	for (uint i = 0; i < input.length(); i++)
+	{
+		if (!(input[i] == ' ' || input[i] == '\t' || input[i] == '\n'))
+		{
+			lead = i;
+			break;
+		}
+	}
+	input.erase(0, lead);
+
+	//Making sure there is at least 1 integer/character in the user input
+	if (input.length() == 0)
+	{
+		return -1;
+	}
+
+	//Making sure that the input contains only integers (after the command)
+	for (uint i = 0; i < input.length(); i++)
+	{
+		if (input[i] < 48 || input[i] > 57)
+		{
+			return -1;
+		}
+	}
+	return atoi(input.c_str());
 }
