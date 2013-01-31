@@ -105,6 +105,7 @@ int main()
 			break;
 		}
 	}
+	cout<<"Quitting..."<<endl;
 
 	return 0;
 }
@@ -180,7 +181,6 @@ void action(string input, Grid* grid)
 		break;
 	case 'q':
 	case 'Q':
-		cout<<"Quitting..."<<endl;
 		break;
 
 		//Not a valid command
