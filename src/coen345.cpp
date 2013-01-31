@@ -178,6 +178,10 @@ void action(string input, Grid* grid)
 		grid->printRobot();
 
 		break;
+	case 'q':
+	case 'Q':
+		cout<<"Quitting..."<<endl;
+		break;
 
 		//Not a valid command
 	default:
